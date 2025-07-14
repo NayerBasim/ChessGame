@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/chess/static/css/main.0851543e.css",
+    "main.js": "/chess/static/js/main.e0ee2124.js",
+    "static/media/wood.jpg": "/chess/static/media/wood.0da4d6459d29dac09511.jpg",
+    "static/media/chessImg.jpeg": "/chess/static/media/chessImg.54ad68064b59083cd601.jpeg",
+    "static/media/snap-sound-effect.mp3": "/chess/static/media/snap-sound-effect.b9ead2d878df22f18968.mp3",
+    "static/media/knock.mp3": "/chess/static/media/knock.fdd0f38da1a331e56122.mp3",
+    "static/media/metal-vibration.mp3": "/chess/static/media/metal-vibration.c91a40abd42f73e6d8b5.mp3",
+    "index.html": "/chess/index.html",
+    "main.0851543e.css.map": "/chess/static/css/main.0851543e.css.map",
+    "main.e0ee2124.js.map": "/chess/static/js/main.e0ee2124.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0851543e.css",
+    "static/js/main.e0ee2124.js"
+  ]
+}
