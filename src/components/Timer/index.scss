@@ -1,0 +1,45 @@
+.timer {
+  display: flex;
+  flex-direction: row;
+  z-index: 3;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  width: 20vh;
+  font-size: 1.5em;
+  background-color: white;
+  position: relative;
+  border: 1px solid black;
+  margin: 10px;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: 600;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+
+  .colourBox {
+    position: relative;
+    width: 5vh;
+    margin-top: 2.5vh;
+    margin-bottom: 2.5vh;
+    margin-right: 1.5vh;
+    height: 5vh;
+    background-color: black;
+    border: 1px solid black;
+    float: left;
+    border-radius: 50%;
+  }
+
+  .W {
+    background-color: white;
+  }
+}
+
+@media (max-width: 1000px) {
+  .timer {
+    padding: 5px;
+  }
+}

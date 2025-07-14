@@ -1,0 +1,126 @@
+:root {
+  --size: 60px;
+}
+// for small screens
+@media (max-width: 1000px) {
+  :root {
+    --size: 45px;
+  }
+}
+.highlight {
+  width: calc(var(--size) / 2) !important;
+  height: calc(var(--size) / 2) !important;
+  margin: calc(var(--size) / 4) !important;
+  pointer-events: none;
+  background-color: rgba(73, 73, 73, 0.578);
+  border-radius: 50%;
+}
+.chessBoard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    height: calc(var(--size) * 8);
+    width: calc(var(--size) * 8);
+  }
+
+  path::before {
+    content: "he";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 50%;
+  }
+
+  .B {
+    transform: rotateZ(180deg);
+    .chessPiece {
+      transform: rotateZ(180deg);
+    }
+  }
+
+  .container {
+    position: relative;
+    overflow: hidden;
+
+    transition: transform 0s 0.2s;
+  }
+
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  grid-template-rows: auto auto auto auto auto auto auto auto;
+  gap: 0px 0px;
+
+  .chessPiece {
+    position: absolute;
+
+    z-index: 3;
+    height: var(--size);
+    width: var(--size);
+    transition: transform 0s 0.2s;
+
+    user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+
+    &:hover {
+      cursor: pointer !important;
+    }
+  }
+  .out {
+    display: none;
+  }
+  .a {
+    right: calc(7 * var(--size));
+  }
+  .b {
+    right: calc(6 * var(--size));
+  }
+  .c {
+    right: calc(5 * var(--size));
+  }
+  .d {
+    right: calc(4 * var(--size));
+  }
+  .e {
+    right: calc(3 * var(--size));
+  }
+  .f {
+    right: calc(2 * var(--size));
+  }
+  .g {
+    right: calc(1 * var(--size));
+  }
+  .h {
+    right: calc(0 * var(--size));
+  }
+
+  .v1 {
+    top: calc(7 * var(--size));
+  }
+  .v2 {
+    top: calc(6 * var(--size));
+  }
+  .v3 {
+    top: calc(5 * var(--size));
+  }
+  .v4 {
+    top: calc(4 * var(--size));
+  }
+  .v5 {
+    top: calc(3 * var(--size));
+  }
+  .v6 {
+    top: calc(2 * var(--size));
+  }
+  .v7 {
+    top: calc(1 * var(--size));
+  }
+  .v8 {
+    top: calc(0 * var(--size));
+  }
+}
