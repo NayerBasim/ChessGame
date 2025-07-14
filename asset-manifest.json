@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/chess/static/css/main.0851543e.css",
-    "main.js": "/chess/static/js/main.e0ee2124.js",
-    "static/media/wood.jpg": "/chess/static/media/wood.0da4d6459d29dac09511.jpg",
-    "static/media/chessImg.jpeg": "/chess/static/media/chessImg.54ad68064b59083cd601.jpeg",
-    "static/media/snap-sound-effect.mp3": "/chess/static/media/snap-sound-effect.b9ead2d878df22f18968.mp3",
-    "static/media/knock.mp3": "/chess/static/media/knock.fdd0f38da1a331e56122.mp3",
-    "static/media/metal-vibration.mp3": "/chess/static/media/metal-vibration.c91a40abd42f73e6d8b5.mp3",
-    "index.html": "/chess/index.html",
-    "main.0851543e.css.map": "/chess/static/css/main.0851543e.css.map",
-    "main.e0ee2124.js.map": "/chess/static/js/main.e0ee2124.js.map"
+    "main.css": "/ChessGame/static/css/main.c9db94b9.css",
+    "main.js": "/ChessGame/static/js/main.1f39cfcb.js",
+    "static/media/wood.jpg": "/ChessGame/static/media/wood.0da4d6459d29dac09511.jpg",
+    "static/media/chessImg.jpeg": "/ChessGame/static/media/chessImg.54ad68064b59083cd601.jpeg",
+    "static/media/snap-sound-effect.mp3": "/ChessGame/static/media/snap-sound-effect.b9ead2d878df22f18968.mp3",
+    "static/media/knock.mp3": "/ChessGame/static/media/knock.fdd0f38da1a331e56122.mp3",
+    "static/media/metal-vibration.mp3": "/ChessGame/static/media/metal-vibration.c91a40abd42f73e6d8b5.mp3",
+    "index.html": "/ChessGame/index.html",
+    "main.c9db94b9.css.map": "/ChessGame/static/css/main.c9db94b9.css.map",
+    "main.1f39cfcb.js.map": "/ChessGame/static/js/main.1f39cfcb.js.map"
   },
   "entrypoints": [
-    "static/css/main.0851543e.css",
-    "static/js/main.e0ee2124.js"
+    "static/css/main.c9db94b9.css",
+    "static/js/main.1f39cfcb.js"
   ]
 }
