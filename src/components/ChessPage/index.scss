@@ -4,7 +4,9 @@
 .ChessPage {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 90vh;
+  padding-bottom: 5vh;
+  padding-top: 5vh;
   background-image: url("../../media/wood.jpg") no-repeat;
   background-color: rgb(59, 59, 59);
   align-items: center;
