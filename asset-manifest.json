@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/ChessGame/static/css/main.490e18c7.css",
-    "main.js": "/ChessGame/static/js/main.78c48979.js",
+    "main.css": "/ChessGame/static/css/main.2861de39.css",
+    "main.js": "/ChessGame/static/js/main.797444e5.js",
     "static/media/wood.jpg": "/ChessGame/static/media/wood.0da4d6459d29dac09511.jpg",
     "static/media/chessImg.jpeg": "/ChessGame/static/media/chessImg.54ad68064b59083cd601.jpeg",
     "static/media/snap-sound-effect.mp3": "/ChessGame/static/media/snap-sound-effect.b9ead2d878df22f18968.mp3",
     "static/media/knock.mp3": "/ChessGame/static/media/knock.fdd0f38da1a331e56122.mp3",
     "static/media/metal-vibration.mp3": "/ChessGame/static/media/metal-vibration.c91a40abd42f73e6d8b5.mp3",
     "index.html": "/ChessGame/index.html",
-    "main.490e18c7.css.map": "/ChessGame/static/css/main.490e18c7.css.map",
-    "main.78c48979.js.map": "/ChessGame/static/js/main.78c48979.js.map"
+    "main.2861de39.css.map": "/ChessGame/static/css/main.2861de39.css.map",
+    "main.797444e5.js.map": "/ChessGame/static/js/main.797444e5.js.map"
   },
   "entrypoints": [
-    "static/css/main.490e18c7.css",
-    "static/js/main.78c48979.js"
+    "static/css/main.2861de39.css",
+    "static/js/main.797444e5.js"
   ]
 }
