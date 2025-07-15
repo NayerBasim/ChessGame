@@ -1,38 +1,41 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useTimer } from "react-timer-hook";
 import "./index.scss";
 
 const Timer = ({ player, turn, mins, setOpenPrompt, setWinner }) => {
-  const time = new Date();
-  let expiryTimestamp = time.setSeconds(
-    time.getSeconds() + parseInt(mins) * 60
-  );
-  let opponent;
-  if (player === "W") {
-    opponent = "B";
-  } else {
-    opponent = "W";
-  }
+  const now = new Date();
 
-  const {
-    seconds,
-    minutes,
-    hours,
-    days,
-    isRunning,
-    start,
-    pause,
-    resume,
-    restart,
-  } = useTimer({
-    expiryTimestamp,
-    onExpire: () => {
-      setOpenPrompt("open");
-      setWinner(opponent + "time");
-    },
-  });
+  // Load saved expiry if exists
+  const savedTime = localStorage.getItem(`${player}_expiry`);
+  const expiryTimestamp = savedTime
+    ? new Date(savedTime)
+    : new Date(now.getTime() + parseInt(mins) * 60 * 1000);
+
+  const opponent = player === "W" ? "B" : "W";
+
+  const { seconds, minutes, hours, isRunning, start, pause, resume, restart } =
+    useTimer({
+      expiryTimestamp,
+      onExpire: () => {
+        setOpenPrompt("open");
+        localStorage.clear();
+        setWinner(opponent + "time");
+      },
+    });
+
+  // Save updated expiry timestamp when paused/resumed or every second
   useEffect(() => {
-    if (player != turn) {
+    const interval = setInterval(() => {
+      const remaining =
+        new Date().getTime() + (hours * 3600 + minutes * 60 + seconds) * 1000;
+      localStorage.setItem(`${player}_expiry`, new Date(remaining));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [seconds]);
+
+  // Control pause/resume based on turn
+  useEffect(() => {
+    if (player !== turn) {
       pause();
     } else {
       resume();
@@ -47,7 +50,7 @@ const Timer = ({ player, turn, mins, setOpenPrompt, setWinner }) => {
       <div className={`colourBox ${player}`}></div>
       <div>
         <span>
-          {hours == 0 ? "" : `${hours}:`}
+          {hours === 0 ? "" : `${hours}:`}
           {minutes}
         </span>
         :<span>{seconds < 10 ? `0${seconds}` : seconds}</span>

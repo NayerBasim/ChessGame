@@ -1,58 +1,55 @@
-.homePage{
-
-    background-color: #424242;
+.homePage {
+  background-color: #424242;
+  height: 100vh;
+  display: flex;
+  color: white;
+  font-family: "Inter", "sans-serif";
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  .startScreenContainer {
+    background-color: rgba(29, 29, 29, 0.459);
+    position: absolute;
+    width: 100vw;
     height: 100vh;
+    z-index: 5;
     display: flex;
-    color: white;
-    font-family: "Inter","sans-serif";
-    flex-direction: column;
     align-items: center;
-    justify-content: space-around;
-    .startScreenContainer{
-        background-color: rgba(29, 29, 29, 0.459);
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
-        z-index: 5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-//        display: none;
-}
-    h1{
-        margin: 0px;
-    }
-    svg{
-        width: 0.5em;
-        position:relative;
-        top: 22px;
+    justify-content: center;
+    //        display: none;
+  }
+  h1 {
+    margin: 0px;
+  }
+  svg {
+    width: 0.5em;
+    position: relative;
+    top: 22px;
+  }
+  img {
+    max-height: 60vh;
+    max-width: 60vw;
 
+    border-radius: 15%;
+    margin: 0px;
+  }
+  button {
+    background-color: #ffa722;
+    border: none;
+    font-weight: bold;
+    width: 30vw;
+    height: 12vw;
+    max-width: 150px;
+    max-height: 60px;
+    flex-shrink: 0;
+    border-radius: 18px;
+    background: #ffa722;
+    &:hover {
+      cursor: pointer;
+      background-color: #d68b1b;
     }
-    img{
-        height: 50vh;
-        border-radius: 15%;
-        margin:0px;
-    }
-    button{
-        background-color: #FFA722;
-        border: none;
-        font-weight: bold;
-        width: 30vw;
-        height: 12vw;
-        max-width: 150px;
-        max-height: 60px;
-        flex-shrink: 0;
-        border-radius: 18px;
-        background: #FFA722;
-        &:hover{
-            cursor: pointer;
-            background-color: #d68b1b;
-        }
-    }
-    .off{
-        display: none;
-    }
-
-
-
+  }
+  .off {
+    display: none;
+  }
 }

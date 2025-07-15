@@ -58,7 +58,7 @@ function ChessPage() {
           />
         </div>
 
-        <h3 className="timerLabel ">{name2}</h3>
+        <h3 className="timerLabel ">{name2 == "" ? "Player2" : name2}</h3>
       </div>
       <div className="takenPieces blacktakenPieces">
         {blackPieces.map((piece) => (
@@ -104,7 +104,7 @@ function ChessPage() {
             setWinner={setWinner}
           />
         </div>
-        <h3 className="timerLabel">{name1}</h3>
+        <h3 className="timerLabel">{name1 == "" ? "Player1" : name1}</h3>
       </div>
     </div>
   );

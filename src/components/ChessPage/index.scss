@@ -61,14 +61,14 @@
   }
 
   @media (min-width: 1000px) {
-    .white {
+    .black {
       position: absolute;
       top: 20px;
       right: 20px;
       font-size: 20px;
       z-index: 10;
     }
-    .black {
+    .white {
       position: absolute;
       top: 20px;
       left: 20px;
@@ -83,13 +83,13 @@
       justify-content: center;
     }
 
-    .blacktakenPieces {
+    .whitetakenPieces {
       position: absolute;
       top: 40vh;
       left: 20px;
       width: 150px;
     }
-    .whitetakenPieces {
+    .blacktakenPieces {
       position: absolute;
       top: 40vh;
       right: 20px;

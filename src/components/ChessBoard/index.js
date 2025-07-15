@@ -56,6 +56,9 @@ function ChessBoard({
   const [ischeckMate, setIsCheckMate] = useState(false);
   const [selectPrompt, setSelectPrompt] = useState(null);
   const [blockID, setBlockID] = useState(["", ""]); // stores the block ID of the piece being moved
+  const [redHighlightW, setRedHighlightW] = useState(false);
+  const [redHighlightB, setRedHighlightB] = useState(false);
+
   let [positions, setPositions] = useState({
     a1: "WR1",
     b1: "WN1",
@@ -102,6 +105,21 @@ function ChessBoard({
   const boardRef = useRef(null);
 
   useEffect(() => {
+    const savedState = localStorage.getItem("chessGameState");
+    const kingLocationsState = localStorage.getItem("kingLocations");
+    const currentTurn = localStorage.getItem("turn");
+    if (savedState) {
+      const boardState = JSON.parse(savedState);
+      const turn = JSON.parse(currentTurn);
+      const kingLocations = JSON.parse(kingLocationsState);
+      setPositions(boardState);
+      console.log(turn.turn);
+      setKingPositions(kingLocations.locations);
+      setTurn(turn.turn);
+    }
+  }, []);
+
+  useEffect(() => {
     setData({
       possible: [],
       positionx: "",
@@ -109,6 +127,23 @@ function ChessBoard({
       id: "",
     });
   }, [turn]);
+
+  const checkIllegal = (king, moves, positionx, positiony) => {
+    let adjustedMoves = [];
+    let oldPosition = positionx + positiony;
+    moves.forEach((possibility) => {
+      if (
+        !check(king, [
+          positions[positionx + positiony],
+          oldPosition,
+          possibility,
+        ])
+      ) {
+        adjustedMoves.push(possibility);
+      }
+    });
+    return adjustedMoves;
+  };
 
   const getPossibleMoves = (
     type,
@@ -155,6 +190,11 @@ function ChessBoard({
         console.log("Error");
         break;
     }
+
+    setData((prev) => ({
+      ...prev,
+      possible: possible,
+    }));
   };
 
   function handleDrag(e) {
@@ -195,7 +235,7 @@ function ChessBoard({
       }
     }
     let elements = [];
-    console.log(positionsCopy);
+
     for (let id of Object.values(positionsCopy)) {
       elements.push(document.getElementById(id));
     }
@@ -231,29 +271,37 @@ function ChessBoard({
     //   run check()
     //   check if check() if false to return false
     //otherwise return true'
+
     let flag = true;
     console.log("Mate");
 
-    let elements = document.getElementsByClassName("chessPiece");
+    let elements = [];
+    console.log(positions);
+    for (let id of Object.values(positions)) {
+      elements.push(document.getElementById(id));
+    }
+
     for (let element of elements) {
-      if (element.id[0] == opponent(king)) {
+      if (element.id[0] == king) {
         let possible = handleLogic(
           element.classList,
           element.id,
           positions,
           false
         );
+
         possible.forEach((possibility) => {
           let oldPosition =
             element.classList[3] + parseInt(element.classList[2][1]);
-
-          if (!check(opponent(king), [element.id, oldPosition, possibility])) {
+          console.log(check(king, [element.id, oldPosition, possibility]));
+          if (!check(king, [element.id, oldPosition, possibility])) {
             flag = false;
             console.log(element.id + " " + oldPosition + " " + possibility);
           }
         });
       }
     }
+    console.log("checkmate is " + flag);
     return flag;
   };
 
@@ -288,10 +336,12 @@ function ChessBoard({
   const handleLogic = (classList, id, positions, game = true) => {
     let possible = []; //stores possible move positions
 
-    // gets the pice along with its position on the board
-    let type = classList[1];
-    let positiony = parseInt(classList[2][1]);
-    let positionx = classList[3];
+    let position = Object.keys(positions).find((key) => positions[key] === id);
+    if (!position) return possible; // In case piece not found
+
+    let type = id.slice(0, 2); // e.g., "WP", "BK", etc.
+    let positionx = position[0]; // e.g., "e"
+    let positiony = parseInt(position[1]); // e.g., 4
 
     // Check if being eaten
     if (game) {
@@ -321,6 +371,10 @@ function ChessBoard({
 
     // LOGIC FOR EACH PIECE
     getPossibleMoves(type, positionx, positiony, possible, positions);
+    // setData((prev) => ({
+    //   ...prev,
+    //   possible: checkIllegal(type[0], possible, positionx, positiony),
+    // }));
     // logs the data to be used when a block is clicked
 
     if (game) {
@@ -451,12 +505,20 @@ function ChessBoard({
       let blockID = id;
 
       // moving pieces
+      console.log(pieceID, positionx + positiony, blockID[0] + blockID[1]);
 
       illegalMove = check(turn, [
         pieceID,
         positionx + positiony,
         blockID[0] + blockID[1],
       ]);
+      console.log(
+        pieceID +
+          " " +
+          (positionx + positiony) +
+          " " +
+          (blockID[0] + blockID[1])
+      );
 
       // castling
       if (pieceID == "WK" && blockID[0] + blockID[1] == "g1") {
@@ -499,8 +561,10 @@ function ChessBoard({
             addToWhiteTaken(positions[blockID[0] + blockID[1]]);
           }
         }
+
         positions[blockID[0] + blockID[1]] = pieceID;
         delete positions[positionx + positiony];
+        setPositions(positions);
         setBlockID([blockID[0], blockID[1]]);
 
         // handle castling
@@ -516,19 +580,20 @@ function ChessBoard({
         }
 
         // handle promotion
-        if (blockID[1] == "8" && pieceID[0] == "W") {
+        if (blockID[1] == "8" && pieceID.slice(0, 2) == "WP") {
           setSelectPrompt("W");
         }
-        if (blockID[1] == "1" && pieceID[0] == "B") {
+        if (blockID[1] == "1" && pieceID.slice(0, 2) == "BP") {
           setSelectPrompt("B");
         }
 
         let Incheck = check(opponent(turn));
-        let Inmate = checkMate(turn);
+        let Inmate = checkMate(opponent(turn));
 
         if (Inmate) {
           setIsCheckMate(true);
           setWinner(turn + "Checkmate");
+          localStorage.clear();
           setTimeout(() => {
             setOpenPrompt("open");
           }, 200);
@@ -538,12 +603,30 @@ function ChessBoard({
         } else {
           checkAudio.play();
         }
+        localStorage.setItem("chessGameState", JSON.stringify(positions));
+        localStorage.setItem(
+          "kingLocations",
+          JSON.stringify({ locations: kingPositions })
+        );
         if (turn == "W") {
           setTurn("B");
+          localStorage.setItem("turn", JSON.stringify({ turn: "B" }));
         } else {
           setTurn("W");
+          localStorage.setItem("turn", JSON.stringify({ turn: "W" }));
         }
       } else {
+        if (turn === "W") {
+          setRedHighlightW(true);
+          setTimeout(() => {
+            setRedHighlightW(false);
+          }, 200);
+        } else {
+          setRedHighlightB(true);
+          setTimeout(() => {
+            setRedHighlightB(false);
+          }, 200);
+        }
         illegalMoveAudio.play();
       }
       setChosen(false);
@@ -570,9 +653,9 @@ function ChessBoard({
           <path id="g3" d="M180 150H210V180H180V150Z" fill="#b58863" />
           <path id="e3" d="M120 150H150V180H120V150Z" fill="#b58863" />
           <path id="a3" d="M0 150H30V180H0V150Z" fill="#b58863" />
-          <path id="d4" d="M90 180H120V210H90V180Z" fill="#b58863" />
-          <path id="h4" d="M210 180H240V210H210V180Z" fill="#b58863" />
-          <path id="f4" d="M150 180H180V210H150V180Z" fill="#b58863" />
+          <path id="d2" d="M90 180H120V210H90V180Z" fill="#b58863" />
+          <path id="h2" d="M210 180H240V210H210V180Z" fill="#b58863" />
+          <path id="f2" d="M150 180H180V210H150V180Z" fill="#b58863" />
           <path id="b2" d="M30 180H60V210H30V180Z" fill="#b58863" />
           <path id="d4" d="M90 120H120V150H90V120Z" fill="#b58863" />
           <path id="h4" d="M210 120H240V150H210V120Z" fill="#b58863" />
@@ -641,6 +724,17 @@ function ChessBoard({
           );
         })}
 
+        <div
+          className={` chessPiece ${kingPositions[0][0]} v${
+            kingPositions[0][1]
+          } ${redHighlightW ? "redHighlight" : ""}`}
+        ></div>
+        <div
+          className={` chessPiece ${kingPositions[1][0]} v${
+            kingPositions[1][1]
+          } ${redHighlightB ? "redHighlight" : ""}`}
+        ></div>
+
         <div className="images">
           {Object.entries(positions).map(([key, value]) => {
             return (
@@ -688,6 +782,15 @@ function ChessBoard({
         blockID={blockID}
         positions={positions}
       />
+      <button
+        className="newGame"
+        onClick={(e) => {
+          localStorage.clear();
+          window.location.reload();
+        }}
+      >
+        New Game
+      </button>
     </div>
   );
 }

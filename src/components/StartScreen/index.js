@@ -20,20 +20,25 @@ function StartScreen() {
       </select>
       <input
         type="text"
+        minLength="1"
+        maxLength="12"
+        required
         onChange={(e) => {
           setName1(e.target.value);
-          console.log(name1);
         }}
         placeholder="Enter Player 1 Name"
       />
       <input
+        minLength="1"
+        maxLength="12"
+        required
         type="text"
         onChange={(e) => setName2(e.target.value)}
         placeholder="Enter Player 2 Name"
       />
 
       <Link to={`/game/${gameTime}?name1=${name1}&name2=${name2}`}>
-        <button>START</button>
+        <button onClick={() => localStorage.clear()}>START</button>
       </Link>
     </div>
   );
