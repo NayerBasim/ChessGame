@@ -46,6 +46,7 @@ function ChessBoard({
   setTurn,
   setOpenPrompt,
   setWinner,
+  allowFlip,
   addToWhiteTaken,
   addToBlackTaken,
 }) {
@@ -503,6 +504,7 @@ function ChessBoard({
     if (chosen == true) {
       let colour = pieceID[0];
       let blockID = id;
+      let caslted = false;
 
       // moving pieces
       console.log(pieceID, positionx + positiony, blockID[0] + blockID[1]);
@@ -523,28 +525,27 @@ function ChessBoard({
       // castling
       if (pieceID == "WK" && blockID[0] + blockID[1] == "g1") {
         castleRightW();
-        audio.play();
-        return;
+        caslted = true;
       }
       if (pieceID == "WK" && blockID[0] + blockID[1] == "c1") {
         castleLeftW();
-        audio.play();
-        return;
+        caslted = true;
       }
       if (pieceID == "BK" && blockID[0] + blockID[1] == "g8") {
         castleRightB();
-        audio.play();
-        return;
+        caslted = true;
       }
       if (pieceID == "BK" && blockID[0] + blockID[1] == "c8") {
         castleLeftB();
-        audio.play();
-        return;
+        caslted = true;
       }
       setChosen(false);
       console.log(possible);
 
-      if (possible.includes(blockID) && colour === turn && !illegalMove) {
+      if (
+        (possible.includes(blockID) && colour === turn && !illegalMove) ||
+        caslted
+      ) {
         if (pieceID == "WK") {
           setKingPositions([blockID[0] + blockID[1], kingPositions[1]]);
           canCastleW = [false, false];
@@ -554,7 +555,7 @@ function ChessBoard({
         }
 
         // updates positions object
-        if (positions[blockID[0] + blockID[1]]) {
+        if (positions[blockID[0] + blockID[1]] && !caslted) {
           if (positions[blockID[0] + blockID[1]][0] == "B") {
             addToBlackTaken(positions[blockID[0] + blockID[1]]);
           } else {
@@ -562,10 +563,12 @@ function ChessBoard({
           }
         }
 
-        positions[blockID[0] + blockID[1]] = pieceID;
-        delete positions[positionx + positiony];
-        setPositions(positions);
-        setBlockID([blockID[0], blockID[1]]);
+        if (!caslted) {
+          positions[blockID[0] + blockID[1]] = pieceID;
+          delete positions[positionx + positiony];
+          setPositions(positions);
+          setBlockID([blockID[0], blockID[1]]);
+        }
 
         // handle castling
 
@@ -635,7 +638,7 @@ function ChessBoard({
 
   return (
     <div className="chessBoard">
-      <div className={`container ${turn}`}>
+      <div className={`container ${allowFlip ? turn : ""}`}>
         <svg
           onClick={squareEventListener}
           onDrop={squareEventListener}
@@ -719,9 +722,19 @@ function ChessBoard({
           <path id="a6" d="M0 60H30V90H0V60Z" fill="white" />
         </svg>
         {data["possible"].map((pos) => {
-          return (
-            <div className={` chessPiece ${pos[0]} v${pos[1]} highlight`}></div>
-          );
+          if (pos in positions) {
+            return (
+              <div
+                className={` chessPiece ${pos[0]} v${pos[1]} highlightBigger`}
+              ></div>
+            );
+          } else {
+            return (
+              <div
+                className={` chessPiece ${pos[0]} v${pos[1]} highlight`}
+              ></div>
+            );
+          }
         })}
 
         <div

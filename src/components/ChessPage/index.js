@@ -12,7 +12,10 @@ function ChessPage() {
     searchParams.get("name1") == "" ? "Player 1" : searchParams.get("name1");
   let name2 =
     searchParams.get("name2") == "" ? "Player 2" : searchParams.get("name2");
+  let allowFlip =
+    searchParams.get("flip") == "" ? "true" : searchParams.get("flip");
 
+  allowFlip = allowFlip == "false" ? false : true;
   const match = useMatch("/game/:time");
   const value = match.params.time;
   const [openPrompt, setOpenPrompt] = useState("closed");
@@ -79,6 +82,7 @@ function ChessPage() {
           setTurn={setTurn}
           setOpenPrompt={setOpenPrompt}
           setWinner={setWinner}
+          allowFlip={allowFlip}
           addToWhiteTaken={(piece) =>
             setWhitePieces((prev) => [...prev, piece].sort())
           }

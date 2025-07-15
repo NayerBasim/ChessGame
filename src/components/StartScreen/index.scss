@@ -1,6 +1,6 @@
 .startScreen {
   width: 200px;
-  height: 400px;
+  height: 500px;
   background-color: white;
   color: black;
   border-radius: 20px;
@@ -26,6 +26,16 @@
     padding: 10px;
     margin: 10px;
     border-radius: 2px;
+  }
+  .checkbox {
+    display: flex;
+    flex-direction: row;
+    input {
+      &:hover {
+        cursor: pointer;
+      }
+      padding: 10px;
+    }
   }
 
   button {

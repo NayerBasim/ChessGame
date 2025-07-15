@@ -5,6 +5,7 @@ function StartScreen() {
   const [gameTime, setGameTime] = useState("5");
   const [name1, setName1] = useState("");
   const [name2, setName2] = useState("");
+  const [flip, setFlip] = useState(true);
 
   const handlechange = (e) => {
     setGameTime(e.target.value);
@@ -36,8 +37,20 @@ function StartScreen() {
         onChange={(e) => setName2(e.target.value)}
         placeholder="Enter Player 2 Name"
       />
+      <div className="checkbox">
+        <input
+          type="checkbox"
+          value={flip}
+          onChange={(e) => {
+            setFlip((prev) => !prev);
+          }}
+        />
+        <p style={{ fontWeight: "600" }}>
+          Do not flip the board for every turn
+        </p>
+      </div>
 
-      <Link to={`/game/${gameTime}?name1=${name1}&name2=${name2}`}>
+      <Link to={`/game/${gameTime}?name1=${name1}&name2=${name2}&flip=${flip}`}>
         <button onClick={() => localStorage.clear()}>START</button>
       </Link>
     </div>

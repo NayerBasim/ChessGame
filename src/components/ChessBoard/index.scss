@@ -1,5 +1,6 @@
 :root {
   --size: 60px;
+  box-sizing: border-box;
 }
 // for small screens
 @media (max-width: 1000px) {
@@ -13,6 +14,15 @@
   margin: calc(var(--size) / 4) !important;
   pointer-events: none;
   background-color: rgba(73, 73, 73, 0.578);
+  border-radius: 50%;
+}
+.highlightBigger {
+  width: calc(var(--size) - 16px) !important;
+  height: calc(var(--size) - 16px) !important;
+
+  pointer-events: none;
+  border: 8px solid rgba(73, 73, 73, 0.578);
+  background-color: transparent;
   border-radius: 50%;
 }
 .redHighlight {
