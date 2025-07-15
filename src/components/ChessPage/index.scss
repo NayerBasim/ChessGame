@@ -8,7 +8,7 @@
   background-image: url("../../media/wood.jpg") no-repeat;
   background-color: rgb(59, 59, 59);
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   .endScreenContainer {
     display: flex;
     align-items: center;
@@ -41,6 +41,7 @@
     align-items: center;
     justify-content: space-between;
     height: 200px;
+    margin: 10px;
     background-color: rgba(10, 10, 10, 0.541);
     border-radius: 10%;
   }

@@ -8,8 +8,8 @@ import { pieceImageFromID } from "../ChessBoard/index";
 function ChessPage() {
   // custom hook to get the current pathname in React
   const [searchParams] = useSearchParams();
-  const name1 = searchParams.get("name1");
-  const name2 = searchParams.get("name2");
+  let name1 = searchParams.get("name1");
+  let name2 = searchParams.get("name2");
 
   const match = useMatch("/game/:time");
   const value = match.params.time;
@@ -23,6 +23,14 @@ function ChessPage() {
     W: "white",
     B: "black",
   };
+  useEffect(() => {
+    if (name1 == "") {
+      name1 = "Player 1";
+    }
+    if (name2 == "") {
+      name2 = "Player 2";
+    }
+  }, []);
 
   useEffect(() => {}, [openPrompt]);
 
@@ -58,7 +66,7 @@ function ChessPage() {
           />
         </div>
 
-        <h3 className="timerLabel ">{name2 == "" ? "Player2" : name2}</h3>
+        <h3 className="timerLabel ">{name2 === "" ? "Player 2" : name2}</h3>
       </div>
       <div className="takenPieces blacktakenPieces">
         {blackPieces.map((piece) => (
@@ -104,7 +112,7 @@ function ChessPage() {
             setWinner={setWinner}
           />
         </div>
-        <h3 className="timerLabel">{name1 == "" ? "Player1" : name1}</h3>
+        <h3 className="timerLabel">{name1 === "" ? "Player 1" : name1}</h3>
       </div>
     </div>
   );
