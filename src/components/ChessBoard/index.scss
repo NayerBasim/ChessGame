@@ -87,6 +87,7 @@
     background-color: orange;
     color: black;
     font-weight: 700;
+    z-index: 9999;
     &:hover {
       cursor: pointer;
       box-shadow: 1px 1px 1px 1px;
