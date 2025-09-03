@@ -4,13 +4,18 @@ import Timer from "../Timer";
 import { useEffect, useState } from "react";
 import EndScreen from "../EndScreen";
 import { useMatch, useSearchParams } from "react-router-dom";
-import { pieceImageFromID } from "../ChessBoard/index";
+import { pieceImageFromID } from "../ChessBoard/helpers/displayFunctions";
 function ChessPage() {
   // custom hook to get the current pathname in React
   const [searchParams] = useSearchParams();
-  const name1 = searchParams.get("name1");
-  const name2 = searchParams.get("name2");
+  let name1 =
+    searchParams.get("name1") == "" ? "Player 1" : searchParams.get("name1");
+  let name2 =
+    searchParams.get("name2") == "" ? "Player 2" : searchParams.get("name2");
+  let allowFlip =
+    searchParams.get("flip") == "" ? "true" : searchParams.get("flip");
 
+  allowFlip = allowFlip == "false" ? false : true;
   const match = useMatch("/game/:time");
   const value = match.params.time;
   const [openPrompt, setOpenPrompt] = useState("closed");
@@ -46,7 +51,7 @@ function ChessPage() {
           nayerIsPlaying={name1 === "Nayer" || name2 === "Nayer"}
         />
       </div>
-      <div className="timerContainer black">
+      <div className={`timerContainer black ${allowFlip ? "flip" : "noflip"}`}>
         <div className=" timerBlack">
           <Timer
             key="first"
@@ -58,7 +63,7 @@ function ChessPage() {
           />
         </div>
 
-        <h3 className="timerLabel ">{name2}</h3>
+        <h3 className="timerLabel ">{name2 === "" ? "Player 2" : name2}</h3>
       </div>
       <div className="takenPieces blacktakenPieces">
         {blackPieces.map((piece) => (
@@ -77,6 +82,7 @@ function ChessPage() {
           setTurn={setTurn}
           setOpenPrompt={setOpenPrompt}
           setWinner={setWinner}
+          allowFlip={allowFlip}
           addToWhiteTaken={(piece) =>
             setWhitePieces((prev) => [...prev, piece].sort())
           }
@@ -94,7 +100,7 @@ function ChessPage() {
           />
         ))}
       </div>
-      <div className="timerContainer white">
+      <div className={`timerContainer white ${allowFlip ? "flip" : "noflip"}`}>
         <div className=" timerWhite">
           <Timer
             player={bottom}
@@ -104,7 +110,7 @@ function ChessPage() {
             setWinner={setWinner}
           />
         </div>
-        <h3 className="timerLabel">{name1}</h3>
+        <h3 className="timerLabel">{name1 === "" ? "Player 1" : name1}</h3>
       </div>
     </div>
   );

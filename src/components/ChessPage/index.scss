@@ -44,6 +44,10 @@
     background-color: rgba(10, 10, 10, 0.541);
     border-radius: 10%;
   }
+  .black.noflip{
+    transform: rotateX(180deg) rotateY(180deg);
+
+  }
   .timerLabel {
     color: white;
   }

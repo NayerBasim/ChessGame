@@ -1,43 +1,13 @@
 import "./index.scss";
 import { useState, useRef, useEffect } from "react";
-import Timer from "../Timer";
-import sound from "../../media/knock.mp3";
-import checkSound from "../../media/snap-sound-effect.mp3";
-import illegalSound from "../../media/metal-vibration.mp3";
 import PieceSelection from "../PieceSelection";
-import {
-  opponent,
-  whitePawnMoves,
-  blackPawnMoves,
-  knightMoves,
-  bishopMoves,
-  rookMoves,
-  kingMoves,
-  queenMoves,
-} from "./functions";
+import { handlePieceLogic, getPossibleMoves, playTurn } from "./helpers/gameLogic";
+import { handleLogicDrag, handleLogicDrop } from "./helpers/gameLogic";
+import { castleRightW, castleLeftW, castleRightB, castleLeftB, opponent } from "./helpers/pieceMovements";
+import { pieceImageFromID } from "./helpers/displayFunctions";
 
-export function pieceImageFromID(id) {
-  const map = {
-    WK: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Chess_klt45.svg/45px-Chess_klt45.svg.png",
-    WQ: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Chess_qlt45.svg/45px-Chess_qlt45.svg.png",
-    WR: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Chess_rlt45.svg/45px-Chess_rlt45.svg.png",
-    WB: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Chess_blt45.svg/45px-Chess_blt45.svg.png",
-    WN: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Chess_nlt45.svg/45px-Chess_nlt45.svg.png",
-    WP: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Chess_plt45.svg/45px-Chess_plt45.svg.png",
 
-    BK: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Chess_kdt45.svg/45px-Chess_kdt45.svg.png",
-    BQ: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Chess_qdt45.svg/45px-Chess_qdt45.svg.png",
-    BR: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Chess_rdt45.svg/45px-Chess_rdt45.svg.png",
-    BB: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Chess_bdt45.svg/45px-Chess_bdt45.svg.png",
-    BN: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Chess_ndt45.svg/45px-Chess_ndt45.svg.png",
-    BP: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Chess_pdt45.svg/45px-Chess_pdt45.svg.png",
-  };
 
-  // Take just the piece type (e.g. "WP" from "WP1", "WR2")
-  const prefix = id.slice(0, 2);
-
-  return map[prefix] || ""; // fallback to empty string if not found
-}
 
 // taking pierces ruins check mechanics.
 function ChessBoard({
@@ -46,63 +16,52 @@ function ChessBoard({
   setTurn,
   setOpenPrompt,
   setWinner,
+  allowFlip,
   addToWhiteTaken,
   addToBlackTaken,
 }) {
-  let canCastleW = [true, true];
-  let canCastleB = [true, true];
+  const [canCastleW, setCanCastleW] = useState([true, true]);
+  const [canCastleB, setCanCastleB] = useState([true, true]);
   const [draggedPiece, setDraggedPiece] = useState(null);
   const [kingPositions, setKingPositions] = useState(["e1", "e8"]);
   const [ischeckMate, setIsCheckMate] = useState(false);
   const [selectPrompt, setSelectPrompt] = useState(null);
   const [blockID, setBlockID] = useState(["", ""]); // stores the block ID of the piece being moved
-  let [positions, setPositions] = useState({
-    a1: "WR1",
-    b1: "WN1",
-    c1: "WB1",
-    d1: "WQ",
-    e1: "WK",
-    f1: "WB2",
-    g1: "WN2",
-    h1: "WR2",
-    a2: "WP1",
-    b2: "WP2",
-    c2: "WP3",
-    d2: "WP4",
-    e2: "WP5",
-    f2: "WP6",
-    g2: "WP7",
-    h2: "WP8",
-    a8: "BR1",
-    b8: "BN1",
-    c8: "BB1",
-    d8: "BQ",
-    e8: "BK",
-    f8: "BB2",
-    g8: "BN2",
-    h8: "BR2",
-    a7: "BP1",
-    b7: "BP2",
-    c7: "BP3",
-    d7: "BP4",
-    e7: "BP5",
-    f7: "BP6",
-    g7: "BP7",
-    h7: "BP8",
+  const [redHighlightW, setRedHighlightW] = useState(false);
+  const [redHighlightB, setRedHighlightB] = useState(false);
+
+
+  const [positions, setPositions] = useState({
+    a1: "WR1", b1: "WN1", c1: "WB1", d1: "WQ", e1: "WK", f1: "WB2", g1: "WN2", h1: "WR2",
+    a2: "WP1", b2: "WP2", c2: "WP3", d2: "WP4", e2: "WP5", f2: "WP6", g2: "WP7", h2: "WP8",
+    
+    a7: "BP1", b7: "BP2", c7: "BP3", d7: "BP4", e7: "BP5", f7: "BP6", g7: "BP7", h7: "BP8",
+    a8: "BR1", b8: "BN1", c8: "BB1", d8: "BQ", e8: "BK", f8: "BB2", g8: "BN2", h8: "BR2",
   });
-  let [chosen, setChosen] = useState(false);
-  //possible, positionx, positiony, id
-  let [data, setData] = useState({
+  const [chosen, setChosen] = useState(false);
+  const [selection, setSelection] = useState({
     possible: [],
     positionx: "",
     positiony: "",
     id: "",
   });
-
   const boardRef = useRef(null);
+    useEffect(() => {
+    const savedState = localStorage.getItem("chessGameState");
+    const kingLocationsState = localStorage.getItem("kingLocations");
+    const currentTurn = localStorage.getItem("turn");
+    if (savedState) {
+      const boardState = JSON.parse(savedState);
+      const turn = JSON.parse(currentTurn);
+      const kingLocations = JSON.parse(kingLocationsState);
+      setPositions(boardState);
+      setKingPositions(kingLocations.locations);
+      setTurn(turn.turn);
+    }
+  }, []);
 
   useEffect(() => {
-    setData({
+    setSelection({
       possible: [],
       positionx: "",
       positiony: "",
@@ -110,449 +69,71 @@ function ChessBoard({
     });
   }, [turn]);
 
-  const getPossibleMoves = (
-    type,
-    positionx,
-    positiony,
-    possible,
-    positions
-  ) => {
-    switch (type) {
-      case "WP":
-        possible = whitePawnMoves(positionx, positiony, possible, positions);
-        break;
+  
+  // Global game context object
+  const gameContext = {
+    positions, setPositions,
+    chosen, setChosen,
+    selection, setSelection,
+    kingPositions, setKingPositions,
+    canCastleW, setCanCastleW,
+    canCastleB, setCanCastleB,
+    ischeckMate, setIsCheckMate,
+    selectPrompt, setSelectPrompt,
+    blockID, setBlockID,
+    draggedPiece, setDraggedPiece,
+    turn, setTurn,
+    setOpenPrompt,
+    setWinner,
+    addToWhiteTaken,
+    addToBlackTaken,
+    castleRightW, castleLeftW, castleRightB, castleLeftB,
+    redHighlightB, setRedHighlightB,
+    redHighlightW, setRedHighlightW
 
-      case "BP":
-        possible = blackPawnMoves(positionx, positiony, possible, positions);
-        break;
-
-      case "WR":
-      case "BR":
-        possible = rookMoves(positionx, positiony, possible, positions);
-        break;
-
-      case "WK":
-      case "BK":
-        possible = kingMoves(positionx, positiony, possible, positions);
-        break;
-
-      case "WB":
-      case "BB":
-        possible = bishopMoves(positionx, positiony, possible, positions);
-        break;
-
-      case "WQ":
-      case "BQ":
-        possible = queenMoves(positionx, positiony, possible, positions);
-        break;
-
-      case "WN":
-      case "BN":
-        possible = knightMoves(positionx, positiony, possible, positions);
-        break;
-
-      default:
-        console.log("Error");
-        break;
-    }
   };
 
-  function handleDrag(e) {
-    const ghost = document.getElementById("ghostPiece");
-    if (ghost && e.clientX && e.clientY) {
-      ghost.style.left = `${e.clientX - 22}px`;
-      ghost.style.top = `${e.clientY - 22}px`;
-    }
-  }
 
-  const handleDrop = (e) => {
-    setDraggedPiece(null);
-    e.target.style.opacity = "1"; // Reset opacity after drop
-  };
 
-  const checkAudio = new Audio(checkSound);
-  const illegalMoveAudio = new Audio(illegalSound);
-  const audio = new Audio(sound);
-  checkAudio.playbackRate = 2.5;
-  audio.playbackRate = 2.5;
-  illegalMoveAudio.playbackRate = 2.5;
+  /* EVENT LISTENERS */
 
-  // detects checks
-  const check = (king, exceptions = []) => {
-    let possible = [];
-    let allpossible = [];
+  // the pieces can move and is initiated by clicking on a piece
 
-    let positionsCopy = JSON.parse(JSON.stringify(positions));
-    let kingPositionsUsed = JSON.parse(JSON.stringify(kingPositions));
-    if (exceptions.length != 0) {
-      delete positionsCopy[exceptions[1]]; // old position
-      positionsCopy[exceptions[2]] = exceptions[0]; //new position <- id
-
-      if (exceptions[0] === "WK") {
-        kingPositionsUsed[0] = exceptions[2];
-      } else if (exceptions[0] === "BK") {
-        kingPositionsUsed[1] = exceptions[2];
-      }
-    }
-    let elements = [];
-    console.log(positionsCopy);
-    for (let id of Object.values(positionsCopy)) {
-      elements.push(document.getElementById(id));
-    }
-
-    for (let element of elements) {
-      if (element.id[0] == opponent(king)) {
-        possible = handleLogic(
-          element.classList,
-          element.id,
-          positionsCopy,
-          false
-        );
-        allpossible = allpossible.concat(possible);
-      }
-    }
-
-    if (opponent(king) === "B") {
-      if (allpossible.includes(kingPositionsUsed[0])) {
-        return true;
-      }
-    } else {
-      if (allpossible.includes(kingPositionsUsed[1])) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  const checkMate = (king) => {
-    //loop through each piece object
-    //   get possible moves for the piece
-    //   run check()
-    //   check if check() if false to return false
-    //otherwise return true'
-    let flag = true;
-    console.log("Mate");
-
-    let elements = document.getElementsByClassName("chessPiece");
-    for (let element of elements) {
-      if (element.id[0] == opponent(king)) {
-        let possible = handleLogic(
-          element.classList,
-          element.id,
-          positions,
-          false
-        );
-        possible.forEach((possibility) => {
-          let oldPosition =
-            element.classList[3] + parseInt(element.classList[2][1]);
-
-          if (!check(opponent(king), [element.id, oldPosition, possibility])) {
-            flag = false;
-            console.log(element.id + " " + oldPosition + " " + possibility);
-          }
-        });
-      }
-    }
-    return flag;
-  };
-
-  // Hadles the logic of the game by assigning possiple positions
-  // thepieces can move and is initiated by clicking on a piece
   const pieceEventListener = (e) => {
-    handleLogic(e.target.classList, e.target.id, positions, true);
+    handlePieceLogic(e.target.classList, e.target.id, selection, gameContext, true);
   };
 
-  const pieceEventListenerDrag = (e) => {
-    const id = e.target.id;
-    setDraggedPiece(id);
 
-    // Create a transparent drag image to hide the default ghost image
-    // const img = new Image();
-    // img.src =
-    //   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMSIgaGVpZ2h0PSIxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjwvc3ZnPg==";
-    // e.dataTransfer.setDragImage(img, 0, 0);
-    e.dataTransfer.setData("text/plain", e.target.id); // Required!
-    e.target.style.opacity = "0.2"; // Make the piece semi-transparent while dragging
-    handleLogicDrag(e.target.classList, e.target.id, positions, true);
+const pieceEventListenerDrag = (e) => {
+  const id = e.target.id;
+  setDraggedPiece(id);
+  e.dataTransfer.setData("text/plain", e.target.id); // Required!
+  e.target.style.opacity = "0.2"; // Make the piece semi-transparent while dragging
+  handlePieceLogic(e.target.classList, e.target.id, selection, gameContext, true);
+};
+
+const pieceEventListenerDrop = (e) => {
+  e.dataTransfer.setData("text/plain", e.target.id); // Required!
+
+  handleLogicDrop(e.target.classList, e.target.id, selection, gameContext);
+  setDraggedPiece(null);
+  e.target.style.opacity = "1"; // Reset opacity after drop
+};
+
+
+  const squareEventListener = (e) => {
+    // Pass selection as the third argument to match handlePieceLogic signature
+
+    playTurn(e.target.id, selection["possible"], selection["positionx"], selection["positiony"], gameContext);
   };
 
-  const pieceEventListenerDrop = (e) => {
-    e.dataTransfer.setData("text/plain", e.target.id); // Required!
-    handleLogicDrop(e.target.classList, e.target.id, positions, true);
-  };
+  /* END OF EVENT LISTENERS */
 
-  // handles the logic of the game by assigning possible positions
-  // the pieces can move and is initiated by clicking on a square
 
-  const handleLogic = (classList, id, positions, game = true) => {
-    let possible = []; //stores possible move positions
 
-    // gets the pice along with its position on the board
-    let type = classList[1];
-    let positiony = parseInt(classList[2][1]);
-    let positionx = classList[3];
-
-    // Check if being eaten
-    if (game) {
-      if (
-        chosen == true &&
-        data["possible"].includes(positionx + positiony) &&
-        turn == data["id"][0]
-      ) {
-        if (
-          positions[positionx + positiony][0] != data["id"][0] &&
-          ischeckMate == false
-        ) {
-          let el = document.getElementById(id);
-          // // el.classList.add("out");
-          // delete positions[positionx + positiony];
-          handleBlock(
-            positionx + positiony,
-            data["possible"],
-            data["positionx"],
-            data["positiony"],
-            data["id"]
-          );
-          return;
-        }
-      }
-    }
-
-    // LOGIC FOR EACH PIECE
-    getPossibleMoves(type, positionx, positiony, possible, positions);
-    // logs the data to be used when a block is clicked
-
-    if (game) {
-      setChosen(true);
-      data["possible"] = possible;
-      data["positionx"] = positionx;
-      data["positiony"] = positiony;
-      data["id"] = id;
-
-      return 1;
-    } else {
-      return possible;
-    }
-  };
-
-  const handleLogicDrag = (classList, id, positions, game = true) => {
-    let possible = []; //stores possible move positions
-
-    // gets the pice along with its position on the board
-    let type = classList[1];
-    let positiony = parseInt(classList[2][1]);
-    let positionx = classList[3];
-
-    getPossibleMoves(type, positionx, positiony, possible, positions);
-    // LOGIC FOR EACH PIECE
-
-    // logs the data to be used when a block is clicked
-
-    if (game) {
-      setChosen(true);
-      data["possible"] = possible;
-      data["positionx"] = positionx;
-      data["positiony"] = positiony;
-      data["id"] = id;
-
-      return 1;
-    } else {
-      return possible;
-    }
-  };
-
-  const handleLogicDrop = (classList, id, positions, game = true) => {
-    let positiony = parseInt(classList[2][1]);
-    let positionx = classList[3];
-    if (game) {
-      if (
-        chosen == true &&
-        data["possible"].includes(positionx + positiony) &&
-        turn == data["id"][0]
-      ) {
-        if (
-          positions[positionx + positiony][0] != data["id"][0] &&
-          ischeckMate == false
-        ) {
-          let el = document.getElementById(id);
-          // el.classList.add("out");
-          // delete positions[positionx + positiony];
-          handleBlock(
-            positionx + positiony,
-            data["possible"],
-            data["positionx"],
-            data["positiony"],
-            data["id"]
-          );
-        }
-      }
-    }
-  };
-
-  const castleLeftW = () => {
-    if (
-      canCastleW[0] &&
-      !positions["b1"] &&
-      !positions["c1"] &&
-      !positions["d1"]
-    ) {
-      delete positions["e1"];
-      delete positions["a1"];
-      positions["c1"] = "WK";
-      positions["d1"] = "WR1";
-    }
-  };
-  const castleRightW = () => {
-    if (canCastleW[1] && !positions["f1"] && !positions["g1"]) {
-      delete positions["e1"];
-      delete positions["h1"];
-      positions["g1"] = "WK";
-      positions["f1"] = "WR1";
-    }
-  };
-  const castleLeftB = () => {
-    if (
-      canCastleB[0] &&
-      !positions["b8"] &&
-      !positions["c8"] &&
-      !positions["d8"]
-    ) {
-      delete positions["e8"];
-      delete positions["a8"];
-      positions["c8"] = "BK";
-      positions["d8"] = "BR1";
-    }
-  };
-  const castleRightB = () => {
-    if (canCastleB[1] && !positions["f8"] && !positions["g8"]) {
-      delete positions["e8"];
-      delete positions["h8"];
-      positions["g8"] = "BK";
-      positions["f8"] = "BR1";
-    }
-  };
-
-  const squareEventListener = (e) =>
-    handleBlock(
-      e.target.id,
-      data["possible"],
-      data["positionx"],
-      data["positiony"],
-      data["id"]
-    );
-  const handleBlock = (id, possible, positionx, positiony, pieceID) => {
-    let piece = document.getElementById(pieceID);
-    let illegalMove;
-    console.log(positions);
-
-    if (chosen == true) {
-      let colour = pieceID[0];
-      let blockID = id;
-
-      // moving pieces
-
-      illegalMove = check(turn, [
-        pieceID,
-        positionx + positiony,
-        blockID[0] + blockID[1],
-      ]);
-
-      // castling
-      if (pieceID == "WK" && blockID[0] + blockID[1] == "g1") {
-        castleRightW();
-        audio.play();
-        return;
-      }
-      if (pieceID == "WK" && blockID[0] + blockID[1] == "c1") {
-        castleLeftW();
-        audio.play();
-        return;
-      }
-      if (pieceID == "BK" && blockID[0] + blockID[1] == "g8") {
-        castleRightB();
-        audio.play();
-        return;
-      }
-      if (pieceID == "BK" && blockID[0] + blockID[1] == "c8") {
-        castleLeftB();
-        audio.play();
-        return;
-      }
-      setChosen(false);
-      console.log(possible);
-
-      if (possible.includes(blockID) && colour === turn && !illegalMove) {
-        if (pieceID == "WK") {
-          setKingPositions([blockID[0] + blockID[1], kingPositions[1]]);
-          canCastleW = [false, false];
-        } else if (pieceID == "BK") {
-          setKingPositions([kingPositions[0], blockID[0] + blockID[1]]);
-          canCastleW = [false, false];
-        }
-
-        // updates positions object
-        if (positions[blockID[0] + blockID[1]]) {
-          if (positions[blockID[0] + blockID[1]][0] == "B") {
-            addToBlackTaken(positions[blockID[0] + blockID[1]]);
-          } else {
-            addToWhiteTaken(positions[blockID[0] + blockID[1]]);
-          }
-        }
-        positions[blockID[0] + blockID[1]] = pieceID;
-        delete positions[positionx + positiony];
-        setBlockID([blockID[0], blockID[1]]);
-
-        // handle castling
-
-        if (pieceID == "WR1") {
-          canCastleW[0] = false;
-        } else if (pieceID == "WR2") {
-          canCastleW[1] = false;
-        } else if (pieceID == "BR1") {
-          canCastleB[0] = false;
-        } else if (pieceID == "BR2") {
-          canCastleB[1] = false;
-        }
-
-        // handle promotion
-        if (blockID[1] == "8" && pieceID[0] == "W") {
-          setSelectPrompt("W");
-        }
-        if (blockID[1] == "1" && pieceID[0] == "B") {
-          setSelectPrompt("B");
-        }
-
-        let Incheck = check(opponent(turn));
-        let Inmate = checkMate(turn);
-
-        if (Inmate) {
-          setIsCheckMate(true);
-          setWinner(turn + "Checkmate");
-          setTimeout(() => {
-            setOpenPrompt("open");
-          }, 200);
-        }
-        if (!Incheck) {
-          audio.play();
-        } else {
-          checkAudio.play();
-        }
-        if (turn == "W") {
-          setTurn("B");
-        } else {
-          setTurn("W");
-        }
-      } else {
-        illegalMoveAudio.play();
-      }
-      setChosen(false);
-    }
-  };
-
-  return (
+return (
     <div className="chessBoard">
-      <div className={`container ${turn}`}>
+      <div className={`container ${allowFlip ? turn : ""}`}>
         <svg
           onClick={squareEventListener}
           onDrop={squareEventListener}
@@ -570,9 +151,9 @@ function ChessBoard({
           <path id="g3" d="M180 150H210V180H180V150Z" fill="#b58863" />
           <path id="e3" d="M120 150H150V180H120V150Z" fill="#b58863" />
           <path id="a3" d="M0 150H30V180H0V150Z" fill="#b58863" />
-          <path id="d4" d="M90 180H120V210H90V180Z" fill="#b58863" />
-          <path id="h4" d="M210 180H240V210H210V180Z" fill="#b58863" />
-          <path id="f4" d="M150 180H180V210H150V180Z" fill="#b58863" />
+          <path id="d2" d="M90 180H120V210H90V180Z" fill="#b58863" />
+          <path id="h2" d="M210 180H240V210H210V180Z" fill="#b58863" />
+          <path id="f2" d="M150 180H180V210H150V180Z" fill="#b58863" />
           <path id="b2" d="M30 180H60V210H30V180Z" fill="#b58863" />
           <path id="d4" d="M90 120H120V150H90V120Z" fill="#b58863" />
           <path id="h4" d="M210 120H240V150H210V120Z" fill="#b58863" />
@@ -635,11 +216,32 @@ function ChessBoard({
           <path id="a8" d="M0 0H30V30H0V0Z" fill="white" />
           <path id="a6" d="M0 60H30V90H0V60Z" fill="white" />
         </svg>
-        {data["possible"].map((pos) => {
-          return (
-            <div className={` chessPiece ${pos[0]} v${pos[1]} highlight`}></div>
-          );
+        {selection["id"][0] !== opponent(turn)  && selection["possible"].map((pos) => {
+          if (pos in positions) {
+            return (
+              <div
+                className={` chessPiece ${pos[0]} v${pos[1]} highlightBigger`}
+              ></div>
+            );
+          } else {
+            return (
+              <div
+                className={` chessPiece ${pos[0]} v${pos[1]} highlight`}
+              ></div>
+            );
+          }
         })}
+
+        <div
+          className={` chessPiece ${kingPositions[0][0]} v${
+            kingPositions[0][1]
+          } ${redHighlightW ? "redHighlight" : ""}`}
+        ></div>
+        <div
+          className={` chessPiece ${kingPositions[1][0]} v${
+            kingPositions[1][1]
+          } ${redHighlightB ? "redHighlight" : ""}`}
+        ></div>
 
         <div className="images">
           {Object.entries(positions).map(([key, value]) => {
@@ -647,6 +249,7 @@ function ChessBoard({
               <img
                 key={key}
                 id={value}
+                src={pieceImageFromID(value)}
                 className={`chessPiece ${value.slice(0, 2)} v${key[1]} ${
                   key[0]
                 } `}
@@ -654,13 +257,15 @@ function ChessBoard({
                   transform: `rotateZ(${value[0] === "B" ? "180deg" : "0deg"})`,
                 }}
                 draggable="true"
-                onDrop={pieceEventListenerDrop}
+
                 onClick={pieceEventListener}
+                
+                
                 onDragStart={pieceEventListenerDrag}
                 onDragOver={(e) => e.preventDefault()}
-                onDrag={handleDrag}
-                onDragEnd={handleDrop}
-                src={pieceImageFromID(value)}
+                onDragEnd={pieceEventListenerDrop}
+                onDrop={pieceEventListenerDrop}
+                
               />
             );
           })}
@@ -688,6 +293,15 @@ function ChessBoard({
         blockID={blockID}
         positions={positions}
       />
+      <button
+        className="newGame"
+        onClick={(e) => {
+          localStorage.clear();
+          window.location.reload();
+        }}
+      >
+        New Game
+      </button>
     </div>
   );
 }
