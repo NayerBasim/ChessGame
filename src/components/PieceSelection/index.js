@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./index.scss";
-import { pieceImageFromID } from "../ChessBoard/index";
+import { pieceImageFromID } from "../ChessBoard/helpers/gameLogicHelper";
 function EndScreen({ setSelectPrompt, selectPrompt, blockID, positions }) {
   const handleChoice = (piece) => {
     positions[blockID[0] + blockID[1]] = piece;

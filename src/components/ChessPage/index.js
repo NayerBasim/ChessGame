@@ -4,7 +4,7 @@ import Timer from "../Timer";
 import { useEffect, useState } from "react";
 import EndScreen from "../EndScreen";
 import { useMatch, useSearchParams } from "react-router-dom";
-import { pieceImageFromID } from "../ChessBoard/index";
+import { pieceImageFromID } from "../ChessBoard/helpers/gameLogicHelper";
 function ChessPage() {
   // custom hook to get the current pathname in React
   const [searchParams] = useSearchParams();
