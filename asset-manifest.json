@@ -1,18 +1,30 @@
 {
   "files": {
-    "main.css": "/ChessGame/static/css/main.143477d7.css",
-    "main.js": "/ChessGame/static/js/main.793e3d72.js",
+    "main.css": "/ChessGame/static/css/main.ec46ed18.css",
+    "main.js": "/ChessGame/static/js/main.5d5cd17f.js",
     "static/media/wood.jpg": "/ChessGame/static/media/wood.0da4d6459d29dac09511.jpg",
     "static/media/chessImg.jpeg": "/ChessGame/static/media/chessImg.54ad68064b59083cd601.jpeg",
     "static/media/snap-sound-effect.mp3": "/ChessGame/static/media/snap-sound-effect.b9ead2d878df22f18968.mp3",
-    "static/media/knock.mp3": "/ChessGame/static/media/knock.fdd0f38da1a331e56122.mp3",
     "static/media/metal-vibration.mp3": "/ChessGame/static/media/metal-vibration.c91a40abd42f73e6d8b5.mp3",
+    "static/media/knock.mp3": "/ChessGame/static/media/knock.4692b44bed6343a136cc.mp3",
+    "static/media/king-b.svg": "/ChessGame/static/media/king-b.f6185b1967368c859d175509374e2d49.svg",
+    "static/media/knight-b.svg": "/ChessGame/static/media/knight-b.1d19798785c2e87f9dc7cd463664a8b7.svg",
+    "static/media/queen-b.svg": "/ChessGame/static/media/queen-b.a40e9f047a7466a209abc3b8901edef5.svg",
+    "static/media/queen-w.svg": "/ChessGame/static/media/queen-w.fe035d307fa1ffb90cfe7c8e9f0fc839.svg",
+    "static/media/bishop-b.svg": "/ChessGame/static/media/bishop-b.5cf00556c3aaac50d94540deefc379f6.svg",
+    "static/media/bishop-w.svg": "/ChessGame/static/media/bishop-w.3b136a8df86d8d4232acc730659efb8e.svg",
+    "static/media/knight-w.svg": "/ChessGame/static/media/knight-w.d56791b80bf36ba93d11aceff0c2e1de.svg",
+    "static/media/king-w.svg": "/ChessGame/static/media/king-w.549874e007d619bcf7743aa25b928133.svg",
+    "static/media/rook-b.svg": "/ChessGame/static/media/rook-b.34db80b416bb6e6dc2a81bd290d012cf.svg",
+    "static/media/rook-w.svg": "/ChessGame/static/media/rook-w.e8c443db7f56e707e1f93b8e0d0edd91.svg",
+    "static/media/pawn-b.svg": "/ChessGame/static/media/pawn-b.cb05f1a9d893e77ba938225bab3571dc.svg",
+    "static/media/pawn-w.svg": "/ChessGame/static/media/pawn-w.bc578538e52fc2c3d2e94e5802eab883.svg",
     "index.html": "/ChessGame/index.html",
-    "main.143477d7.css.map": "/ChessGame/static/css/main.143477d7.css.map",
-    "main.793e3d72.js.map": "/ChessGame/static/js/main.793e3d72.js.map"
+    "main.ec46ed18.css.map": "/ChessGame/static/css/main.ec46ed18.css.map",
+    "main.5d5cd17f.js.map": "/ChessGame/static/js/main.5d5cd17f.js.map"
   },
   "entrypoints": [
-    "static/css/main.143477d7.css",
-    "static/js/main.793e3d72.js"
+    "static/css/main.ec46ed18.css",
+    "static/js/main.5d5cd17f.js"
   ]
 }
