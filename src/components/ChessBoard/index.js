@@ -73,7 +73,6 @@ function ChessBoard({
       const turn = JSON.parse(currentTurn);
       const kingLocations = JSON.parse(kingLocationsState);
       setPositions(boardState);
-      console.log(turn.turn);
       setKingPositions(kingLocations.locations);
       setTurn(turn.turn);
     }
@@ -209,7 +208,6 @@ function ChessBoard({
     console.log("Mate");
 
     let elements = [];
-    console.log(positions);
     for (let id of Object.values(positions)) {
       elements.push(document.getElementById(id));
     }
@@ -226,15 +224,13 @@ function ChessBoard({
         possible.forEach((possibility) => {
           let oldPosition =
             element.classList[3] + parseInt(element.classList[2][1]);
-          console.log(check(king, [element.id, oldPosition, possibility]));
           if (!check(king, [element.id, oldPosition, possibility])) {
             flag = false;
-            console.log(element.id + " " + oldPosition + " " + possibility);
           }
         });
       }
     }
-    console.log("checkmate is " + flag);
+
     return flag;
   };
 
@@ -329,28 +325,19 @@ function ChessBoard({
   const playTurn = (id, possible, positionx, positiony, pieceID) => {
 
     let illegalMove;
-    console.log(positions);
-
     if (chosen == true) {
       let colour = pieceID[0];
       let blockID = id;
       let caslted = false;
 
       // moving pieces
-      console.log(pieceID, positionx + positiony, blockID[0] + blockID[1]);
 
       illegalMove = check(turn, [
         pieceID,
         positionx + positiony,
         blockID[0] + blockID[1],
       ]);
-      console.log(
-        pieceID +
-          " " +
-          (positionx + positiony) +
-          " " +
-          (blockID[0] + blockID[1])
-      );
+
 
       // castling
       if (pieceID == "WK" && blockID[0] + blockID[1] == "g1") {
@@ -370,7 +357,7 @@ function ChessBoard({
         caslted = true;
       }
       setChosen(false);
-      console.log(possible);
+
 
       if (
         (possible.includes(blockID) && colour === turn && !illegalMove) ||
@@ -637,16 +624,15 @@ function ChessBoard({
 
         <div className="images">
           {Object.entries(positions).map(([key, value]) => {
+            
             return (
               <img
                 key={key}
                 id={value}
                 className={`chessPiece ${value.slice(0, 2)} v${key[1]} ${
                   key[0]
-                } `}
-                style={{
-                  transform: `rotateZ(${value[0] === "B" ? "180deg" : "0deg"})`,
-                }}
+                } ${allowFlip ? "flip" : "noflip"}`}
+
                 draggable="true"
                 
                 onClick={pieceEventListener}
