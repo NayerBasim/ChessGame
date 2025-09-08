@@ -625,7 +625,7 @@ function ChessBoard({
         <div className="images">
           {Object.entries(positions).map(([key, value]) => {
             // Flip black pieces if allowFlip is false
-            const shouldFlip = value[0] === "B" && !allowFlip;
+            const shouldFlip = value[0] === "B";
             return (
               <img
                 key={key}

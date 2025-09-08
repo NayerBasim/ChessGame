@@ -51,6 +51,12 @@
     border-radius: 50%;
   }
 
+  .B {
+    transform: rotateZ(180deg);
+    .chessPiece {
+      transform: rotateZ(180deg);
+    }
+  }
 
   .container {
     position: relative;
