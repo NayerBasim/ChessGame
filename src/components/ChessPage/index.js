@@ -51,7 +51,7 @@ function ChessPage() {
           nayerIsPlaying={name1 === "Nayer" || name2 === "Nayer"}
         />
       </div>
-      <div className="timerContainer black">
+      <div className={`timerContainer black ${allowFlip ? "flip" : "noflip"}`}>
         <div className=" timerBlack">
           <Timer
             key="first"

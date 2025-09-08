@@ -62,6 +62,12 @@
       margin: -8px;
     }
   }
+  @media (max-width: 999px){
+    .timerContainer.black.noflip {
+      transform: rotate(180deg);
+    }
+  }
+
 
   @media (min-width: 1000px) {
     .black {

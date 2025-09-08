@@ -327,7 +327,7 @@ function ChessBoard({
 
 
   const playTurn = (id, possible, positionx, positiony, pieceID) => {
-    let piece = document.getElementById(pieceID);
+
     let illegalMove;
     console.log(positions);
 
@@ -466,13 +466,26 @@ function ChessBoard({
             setRedHighlightB(false);
           }, 200);
         }
+      setSelection({
+        possible: [],
+        positionx: "",
+        positiony: "",
+        id: "",
+      });
         illegalMoveAudio.play();
       }
       setChosen(false);
     }
   };
 
-  const squareEventListener = (e) =>
+
+
+
+    
+
+  //                     EVENT LISTENERS                  //
+
+    const squareEventListener = (e) =>
     playTurn(
       e.target.id,
       selection["possible"],
@@ -480,11 +493,6 @@ function ChessBoard({
       selection["positiony"],
       selection["id"]
     );
-
-
-    
-
-  //                     EVENT LISTENERS                  //
 
 
 
