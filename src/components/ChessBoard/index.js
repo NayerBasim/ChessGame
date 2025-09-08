@@ -624,17 +624,18 @@ function ChessBoard({
 
         <div className="images">
           {Object.entries(positions).map(([key, value]) => {
-            
+            // Flip black pieces if allowFlip is false
+            const shouldFlip = value[0] === "B" && !allowFlip;
             return (
               <img
                 key={key}
                 id={value}
-                className={`chessPiece ${value.slice(0, 2)} v${key[1]} ${
-                  key[0]
-                } ${allowFlip ? "flip" : "noflip"}`}
-
+                className={`chessPiece ${value.slice(0, 2)} v${key[1]} ${key[0]}`}
+                style={{
+                  transform: shouldFlip ? "rotateZ(180deg)" : "rotateZ(0deg)",
+                  cursor: 'grab',
+                }}
                 draggable="true"
-                
                 onClick={pieceEventListener}
                 onDragStart={pieceEventListenerDrag}
                 onDragOver={(e) => e.preventDefault()}
