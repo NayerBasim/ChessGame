@@ -1,5 +1,5 @@
 import "./index.scss";
-import ChessBoard from "../ChessBoard";
+import ChessBoardModified from "../ChessBoard Modified";
 import Timer from "../Timer";
 import { useEffect, useState } from "react";
 import EndScreen from "../EndScreen";
@@ -75,7 +75,7 @@ function ChessPage() {
         ))}
       </div>
       <div className="chessBoardContainer">
-        <ChessBoard
+        <ChessBoardModified
           key="second"
           player={player}
           turn={turn}

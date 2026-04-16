@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# Chessy - React Chess Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A two-player chess web app built with React and SCSS, featuring timers, move validation, turn-based board flipping, captured-piece tracking, and a game-over screen.
+
+## Demo
+
+Live URL (update this after deployment):
+
+- https://nayerbasim.github.io/ChessGame
+
+## Screenshots
+
+
+
+![Home Screen](docs/images/home_screen_image.png)
+
+Home screen where players begin a new match from the main landing page.
+
+
+![Gameplay](docs/images/gameplay_image.png)
+
+Live gameplay view showing timers, pieces, and the active board state.
+
+
+![Check](docs/images/check_image.png)
+
+A check scenario where the king is under immediate threat.
+
+
+![Drag and Drop](docs/images/drag_and_drop_image.png)
+
+Drag-and-drop interaction used to move a selected piece across the board.
+
+![Possible Moves](docs/images/possible_moves_image.png)
+
+Highlighted legal move options displayed after selecting a piece.
+
+
+
+## Features
+
+- 1v1 local play with custom player names
+- Configurable game timers (5, 10, 15, or 20 minutes)
+- Optional board flip every turn
+- Piece movement validation and illegal-move feedback
+- Check and checkmate detection
+- Castling support
+- Captured piece display for both sides
+- Drag-and-drop and click-based move interactions
+- Local storage persistence for board state, king locations, and current turn
+- New Game reset and match end screen
+
+## Tech Stack
+
+- React 18
+- React Router 6
+- SCSS
+- react-timer-hook
+- Create React App (react-scripts)
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+ recommended
+- npm 9+ recommended
+
+### Installation
+
+```bash
+npm install
+```
+
+### Run in Development
+
+```bash
+npm start
+```
+
+Then open http://localhost:3000.
+
+## How to Play
+
+1. Open the app and click PLAY.
+2. Choose the game time and enter player names.
+3. Optionally disable board flipping.
+4. Start the game and play by clicking or dragging pieces.
+5. Win by checkmate or by timeout.
+
+## Route / URL Format
+
+Main game route:
+
+- `/game/:time?name1=<player1>&name2=<player2>&flip=<true|false>`
+
+Example:
+
+- `/game/10?name1=Alice&name2=Bob&flip=true`
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory:
 
-### `npm start`
+- `npm start` - Runs the app in development mode
+- `npm test` - Launches the test runner
+- `npm run build` - Builds a production bundle
+- `npm run deploy` - Deploys `build` to GitHub Pages (requires `homepage` config)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Project Structure
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+```text
+src/
+	components/
+		ChessBoard/
+			helpers/
+		ChessPage/
+		EndScreen/
+		HelperDots/
+		Home/
+		PieceSelection/
+		StartScreen/
+		Timer/
+	media/
+```
 
-### `npm test`
+## Deployment Notes
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Update `homepage` in `package.json` with your GitHub Pages URL.
+2. Run:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+npm run deploy
+```
